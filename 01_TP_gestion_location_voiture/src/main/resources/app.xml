@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+       <mvc:resources mapping="/resources/**" location="/resources/" />
+	<context:component-scan base-package="com.adaming.myapp" />
+	
+	<!-- injection du bean voiture -->
+	<bean id="voitureDao" class="com.adaming.location.dao.voiture.VoitureDaoImpl"></bean>
+	<bean id="voitureService" class="com.adaming.location.dao.service.voiture.VoitureServiceImpl">
+		<property name="dao" ref="voitureDao"></property>
+	</bean>
+	
+	<!-- injection du bean client -->
+	<bean id="clientDao" class="com.adaming.location.dao.client.ClientDaoImpl"></bean>
+	<bean id="clientService" class="com.adaming.location.dao.service.client.ClientServiceImpl">
+		<property name="dao" ref="clientDao"></property>
+	</bean>
+	
+	<!-- injection du bean reservation -->
+	<bean id="resaDao" class="com.adaming.location.dao.reservation.ReservationDaoImpl"></bean>
+	<bean id="resaService" class="com.adaming.location.dao.service.reservation.ReservationServiceImpl">
+		<property name="dao" ref="resaDao"></property>
+	</bean>
+	
+	<!-- injection du bean facture -->
+	<bean id="factureDao" class="com.adaming.location.dao.facture.FactureDaoImpl"></bean>
+	<bean id="factureService" class="com.adaming.location.dao.service.facture.FactureServiceImpl">
+		<property name="dao" ref="factureDao"></property>
+	</bean>
+	
+	<!-- injection du bean agence -->
+	<bean id="agenceDao" class="com.adaming.location.dao.agence.AgenceDaoImpl"></bean>
+	<bean id="agenceService" class="com.adaming.location.dao.service.agence.AgenceServiceImpl">
+		<property name="dao" ref="agenceDao"></property>
+	</bean>
+
+	<bean id="datasource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url"
+			value="jdbc:mysql://localhost/db_location_voiture"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="intijee"></property>
+	</bean>
+	<bean id="PersistenceUnitManager"
+		class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
+		<property name="defaultDataSource" ref="datasource"></property>
+		<property name="persistenceXmlLocations">
+			<list>
+				<value>classpath*:META-INF/persistence.xml</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="EntityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitManager" ref="PersistenceUnitManager"></property>
+		<property name="persistenceUnitName" value="UP_JsfGestionLocationVoiture"></property>
+	</bean>
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="EntityManagerFactory"></property>
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<context:annotation-config></context:annotation-config>
+
+</beans>
